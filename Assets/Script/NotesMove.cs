@@ -40,7 +40,29 @@ public class NotesMove : MonoBehaviour
     }
 
 
-    private void FixedUpdate()
+    //private void FixedUpdate()
+    //{
+    //    if (_go == true)
+    //    {
+    //        if (endMarker.position.x - endMarker.position.x * _noteSpeed * (_time - _audioSource.time) > 0)
+    //        {
+
+    //            transform.position = new Vector3(endMarker.position.x - endMarker.position.x * _noteSpeed * (_time - _audioSource.time), transform.position.y, -7);
+
+    //            if (endMarker.position.x - endMarker.position.x * _noteSpeed * (_delay - _audioSource.time) > endMarker.position.x)
+    //            {
+    //               _notesController.goDestroy(int.Parse(this.name));
+    //            }
+
+    //        }
+    //        else
+    //        {
+
+    //        }
+    //    }
+    //}
+
+    private void Update()
     {
         if (_go == true)
         {

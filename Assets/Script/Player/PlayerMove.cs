@@ -7,14 +7,12 @@ using UnityEngine;
 /// </summary>
 public class PlayerMove : MonoBehaviour
 {
-    /// <summary>キー入力があったかどうか</summary>
-    static public bool _buttonDown = false;
-    //int _count = 0;
     /// <summary>現在地のｘ軸</summary>
     int _pointX = 0;
     /// <summary>現在地のｚ軸</summary>
     int _pointZ = 0;
 
+    /// <summary>現マップに存在する敵のリストを取得</summary>
     EnemyList _EnemyList;
 
     RhythmController _rizumuController;
@@ -30,6 +28,10 @@ public class PlayerMove : MonoBehaviour
 
     GameManager _gameManager;
 
+    GameObject _attacEffect;
+    Animator _attacAnimator;
+    string _effectname;
+
     int _moveNum = 0;
 
     // Start is called before the first frame update
@@ -37,19 +39,21 @@ public class PlayerMove : MonoBehaviour
     {
         var gm = GameObject.Find("GameManager");
         _gameManager = gm.GetComponent<GameManager>();
-        if(_gameManager == null)
+        if (_gameManager == null)
         {
             //Debug.Log("GameManagerが取得できていません");
         }
 
         var life = GameObject.Find("heartSlider");
-
-        if(life == null)
+        if (life == null)
         {
             //Debug.Log("heartSliderが取得出来てません");
         }
+        
+        var player = transform.GetChild(1).gameObject;
+        //Debug.Log(player.gameObject.name);
 
-        _playerPresenter.SetLife(life,_gameManager);
+        _playerPresenter.SetLife(life, _gameManager,player);
 
         var enemyList = GameObject.Find("EnemyList");
 
@@ -57,9 +61,9 @@ public class PlayerMove : MonoBehaviour
 
         var rhythmController = GameObject.Find("RhythmController");
 
-        if(rhythmController == null)
+        if (rhythmController == null)
         {
-           //Debug.Log("RhythmControllerが取得出来ていない");
+            //Debug.Log("RhythmControllerが取得出来ていない");
         }
 
         _audioSource = rhythmController.GetComponent<AudioSource>();
@@ -67,34 +71,20 @@ public class PlayerMove : MonoBehaviour
         _rizumuController = rhythmController.GetComponent<RhythmController>();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void GetEffect(GameObject aEffect)
     {
-        //moveCheck();
+        _attacEffect = Instantiate(aEffect);
+        _attacAnimator = _attacEffect.GetComponent<Animator>();
     }
 
-
-    //void moveCheck()
-    //{
-    //    if (Input.GetButtonDown("Horizontal"))
-    //    {
-    //        _audioTime = _audioSource.timeSamples;
-    //        float _moveNumber = Input.GetAxisRaw("Horizontal");
-    //        //_rizumuController.ChakNote(_moveNumber, "Horizontal");
-    //        _rizumuController.Judgetiming(_audioTime, _moveNumber, "Horizontal");
-    //    }
-    //    else if (Input.GetButtonDown("Vertical"))
-    //    {
-    //        _audioTime = _audioSource.timeSamples;
-    //        float _moveNumber = Input.GetAxisRaw("Vertical");
-    //        _rizumuController.Judgetiming(_audioTime, _moveNumber, "Vertical");
-    //    }
-    //}
-
+    /// <summary>
+    /// プレイヤーを動かす関数
+    /// </summary>
+    /// <param name="moveNum"></param>
     public void GoMove(Vector2 moveNum)
     {
-        var x =(int)moveNum.x;
-        var y =(int) moveNum.y;
+        var x = (int)moveNum.x;
+        var y = (int)moveNum.y;
         //Debug.Log("渡された移動される値 " + moveNum);
 
         if (y == 0)
@@ -110,7 +100,10 @@ public class PlayerMove : MonoBehaviour
             else if (areaController._onEnemy == true)
             {
                 //Debug.Log("攻撃");
-                _EnemyList.CheckEnemy(_pointX + x, _pointZ, 1);
+                _attacEffect.SetActive(true);
+                _attacEffect.transform.position = new Vector3(_pointX + x, 1, this.transform.position.z);
+                _attacAnimator.Play("AttackEffect");
+                _EnemyList.CheckEnemy(_pointX + x, _pointZ, _playerPresenter._playerPower);
                 //_playerPresenter.Attack(_pointX + 1, _pointZ);
             }
             else
@@ -130,6 +123,7 @@ public class PlayerMove : MonoBehaviour
             //行きたい方向の情報を確認したいので移動先のスクリプトを取得する
             areaController = MapManager._areas[_pointX, _pointZ + y].GetComponent<AreaController>();
 
+
             //移動先の情報によって行動を決める
             if (areaController._onWall == true)
             {
@@ -138,7 +132,10 @@ public class PlayerMove : MonoBehaviour
             else if (areaController._onEnemy == true)
             {
                 //Debug.Log("攻撃");
-                _EnemyList.CheckEnemy(_pointX, _pointZ + y, 1);
+                _attacEffect.SetActive(true);
+                _attacEffect.transform.position = new Vector3(this.transform.position.x, 1, _pointZ + y);
+                _attacAnimator.Play("AttackEffect");
+                _EnemyList.CheckEnemy(_pointX, _pointZ + y, _playerPresenter._playerPower);
                 //_playerPresenter.Attack(_pointX + 1, _pointZ);
             }
             else
@@ -156,21 +153,43 @@ public class PlayerMove : MonoBehaviour
         _playerPresenter.SaveMyPosition(_pointX, _pointZ);
     }
 
+    //IEnumerator Effect()
+    //{
+    //   // yield return new WaitForSeconds(_attacAnimator, 0);
+    //}
 
+    /// <summary>
+    /// 攻撃力を上げるための関数
+    /// </summary>
+    public void ChangPower(int conboCount)
+    {
+        if (conboCount > 10)
+        {
+            _playerPresenter.ChangPower(2);
+        }
+        else
+        {
+            _playerPresenter.ChangPower(1.5f);
+        }
+    }
 
+    public void ResetPower()
+    {
+        _playerPresenter.ChangPower(1);
+    }
 
     /// <summary>
     /// 今いる場所が階段の上かどうか判断する関数
     /// </summary>
     void StairCheck()
     {
-        Debug.Log("階段チェック");
-        areaController = MapManager._areas[_pointX,_pointZ].GetComponent<AreaController>();
+        //Debug.Log("階段チェック");
+        areaController = MapManager._areas[_pointX, _pointZ].GetComponent<AreaController>();
 
         //階段の上であれば次の階層に移動する
-        if(areaController._stair == true)
+        if (areaController._stair == true)
         {
-            Debug.Log("階段の上にいる");
+            //Debug.Log("階段の上にいる");
             //ここに次の階層に移動するコードを書く
             _gameManager.NextMapGenerate(1, false);
 
@@ -333,7 +352,7 @@ public class PlayerMove : MonoBehaviour
                     //現在のプレイヤーの位置を調べる
                     _pointX = x;
                     _pointZ = z;
-                    Debug.Log("現在の配列番号" + _pointX + "x"  +" , " + _pointZ + "z");
+                    //Debug.Log("現在の配列番号" + _pointX + "x" + " , " + _pointZ + "z");
                     _playerPresenter.SaveMyPosition(_pointX, _pointZ);
                 }
             }

@@ -31,6 +31,9 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     SpawnPlayer _spawnPlayer;
 
+    [SerializeField]
+    public Text _powerText;
+
     AreaController _areaController;
 
     //生成するフロアの最大値と最小値
@@ -65,6 +68,10 @@ public class GameManager : MonoBehaviour
 
     bool _noteSceneLoad = true;
 
+    [SerializeField] GameObject _camer;
+
+    [SerializeField] Text _text;
+
     public void Awake()
     {
         LoadMap(true);
@@ -74,7 +81,7 @@ public class GameManager : MonoBehaviour
 
     public void Start()
     {
-
+        _randomFloorNum = Random.Range(_minFloor,_maxFloor);
     }
 
     private void Update()
@@ -135,7 +142,7 @@ public class GameManager : MonoBehaviour
                 //生成したマップの状態に応じてプレイヤーの初期位置を決める
                 _spawnPlayer.InitPlayerPos();
                 //生成したマップの状態に応じて敵を生成する
-                _spawnEnemy.spawn(1);
+                _spawnEnemy.spawn(10);
                 _spawnEnemy.BossSpawn(BossMap,_timuUp);
                 if(_noteSceneLoad != false)
                 {
@@ -150,6 +157,13 @@ public class GameManager : MonoBehaviour
                    _noteGenerate = _notesController.NoteReset();
                 }
 
+            }
+            else
+            {
+                //生成したマップの状態に応じてプレイヤーの初期位置を決める
+                _spawnPlayer.InitPlayerPos();
+                _spawnEnemy.BossSpawn(BossMap, _timuUp);
+                _noteGenerate = _notesController.NoteReset();
             }
 
         }
@@ -251,6 +265,7 @@ public class GameManager : MonoBehaviour
 
         if (_floorcount == _randomFloorNum)
         {
+            Debug.Log("ボス部屋作成");
             //ボスの部屋を作る
             StartCoroutine(CreateBoosMap());
         }
@@ -300,16 +315,23 @@ public class GameManager : MonoBehaviour
     {
         if (_timuUp == true)
         {
-            if (_enemyList.CheckEnemy() == true)
+            if (_enemyList.Check() == true)
             {
                 _stairPointCreate.OpenDoor();
             }
         }
         else
         {
+            StartCoroutine("StairText");
             _stairPointCreate.OpenDoor();
         }
+    }
 
+    IEnumerator StairText()
+    {
+        _text.text = "階段が現れた";
+        yield return new WaitForSeconds(0.3f);
+        _text.text = "";
     }
 
     /// <summary>最終ボスを倒してゲームクリア表示をする関数</summary>
@@ -361,6 +383,7 @@ public class GameManager : MonoBehaviour
         _nowPlay = false;
         //Debug.Log("死亡しました");
         _areaController = MapManager._areas[PlayerPosX, PlayerPosZ].GetComponent<AreaController>();
+        //Instantiate(_camer,new Vector3(PlayerPosX,0,PlayerPosZ),Quaternion.identity);
         _areaController._onPlayer = false;
         //_nootCanvas.SetActive(false);
         _gameResult = "倒されました";//表示の仕方を「（敵の名前）に倒されました」にする（できたら）

@@ -29,6 +29,9 @@ public class NotesController : MonoBehaviour
     [SerializeField]
     NotesMove _note;
 
+    [SerializeField]
+    RhythmController _hythmController;
+
     AudioSource _audioSource;
 
     /// <summary>
@@ -80,6 +83,7 @@ public class NotesController : MonoBehaviour
     public void goDestroy(int noteNum)
     {
         _noteDetas[noteNum]._noteData.gameObject.SetActive(false);
+        _hythmController.Misu();
     }
 
     public void nnn(float bete)

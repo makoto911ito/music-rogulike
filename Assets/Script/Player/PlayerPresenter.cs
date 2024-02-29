@@ -1,11 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using PlayerModel;
 
 public class PlayerPresenter : MonoBehaviour
 {
-    /// <summary>プレイヤーのデータに関してのクラス</summary>
-    PlayerModel _playerModel = null;
+    /// <summary>プレイヤーのHPに関してのクラス</summary>
+    Hp _playerHpModel = null;
+
+    /// <summary>プレイヤーの攻撃力に関してのクラス</summary>
+    PowerModel _playerPowerModel = null;
 
     /// <summary>プレイヤーの表示に関してのクラス</summary>
     [SerializeField] PlayerView _playerView = null;
@@ -15,6 +19,7 @@ public class PlayerPresenter : MonoBehaviour
 
     /// <summary>プレイヤーのHP</summary>
     [SerializeField] int _playerHp = 1;
+    public float _playerPower = 1;
 
     GameManager _gameManager = null;
 
@@ -22,10 +27,10 @@ public class PlayerPresenter : MonoBehaviour
     int _myPosZ = 0;
 
 
-    public void SetLife(GameObject life, GameManager gm)
+    public void SetLife(GameObject life, GameManager gm,GameObject playerImage)
     {
         _gameManager = gm;
-        _playerView.SetSlider(life);
+        _playerView.InitView(life, _gameManager._powerText,playerImage);
         StartCoroutine(StatInit());
     }
 
@@ -37,22 +42,33 @@ public class PlayerPresenter : MonoBehaviour
 
     public void Init()
     {
-
-        _playerModel = new PlayerModel(
+        _playerHpModel = new Hp(
             _playerHp,
             x =>
             {
+                //Debug.Log(x + "PlayerPresenterのHP");
                 _playerView.ChangeSliderValue(_playerHp, x);
-                if(x <= 0)
+                if (x <= 0)
                 {
-                    _gameManager.GameOvare(_myPosX,_myPosZ);
+                    _gameManager.GameOvare(_myPosX, _myPosZ);
                     Destroy(this.gameObject);
                 }
             },
             _playerView.gameObject);
 
-
+        _playerPowerModel = new PowerModel(
+            1,
+            x =>
+            {
+                _playerPower = x;
+                _playerView.ChangePowerView(x);
+            },
+            _playerView.gameObject);
     }
+
+
+
+
 
     public void SaveMyPosition(int posX, int posZ)
     {
@@ -69,13 +85,22 @@ public class PlayerPresenter : MonoBehaviour
 
     public void EnemyAttack(int ePower)
     {
-        if (_playerModel == null)
+        if (_playerHpModel == null)
         {
-            Debug.Log("PlayerModelはnullです");
+            //Debug.Log("PlayerModelはnullです");
         }
 
-        Debug.Log("敵からダメージを食らっている");
-        _playerModel.Damage(ePower);
+        //Debug.Log("敵からダメージを食らっている");
+        _playerHpModel.Damage(ePower);
 
+    }
+
+    public void ChangPower(float deta)
+    {
+        if (_playerPowerModel == null) { }
+        else
+        {
+            _playerPowerModel.ChangPower(deta);
+        }
     }
 }

@@ -5,9 +5,9 @@ using UnityEngine;
 public class MapManager : MonoBehaviour
 {
     /// <summary>‰¡•</summary>
-    [SerializeField] static public int _x = 35;
+    [SerializeField] static public int _x = 50;
     /// <summary>c•</summary>
-    [SerializeField] static public int _z = 35;
+    [SerializeField] static public int _z = 50;
     /// <summary>ƒGƒŠƒA‚Ì”</summary>
     [SerializeField] int _areaNum = 4;
 
@@ -374,8 +374,6 @@ public class MapManager : MonoBehaviour
         _x = _bossMapX;
         _z = _bossMapZ;
 
-        _areas = new GameObject[_x + 2, _z + 2];
-
         for (var x = 1; x < _bossMapX; x++)
         {
             for (var z = 6; z < _bossMapZ; z++)
@@ -413,7 +411,7 @@ public class MapManager : MonoBehaviour
             }
         }
 
-        StartCoroutine(LastSpawner(21,6));
+        //StartCoroutine(LastSpawner(21,6));
 
         return true;
     }

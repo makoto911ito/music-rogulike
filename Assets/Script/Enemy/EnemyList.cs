@@ -45,13 +45,15 @@ public class EnemyList : MonoBehaviour
                 _enemys.Clear();
             }
         }
+
+        Debug.Log(_enemys.Count + "敵の数");
     }
 
     /// <summary>
     /// リストの中に敵が残っているかどうか
     /// </summary>
     /// <returns></returns>
-    public bool CheckEnemy()
+    public bool Check()
     {
         bool _clearEnemy;
 
@@ -71,13 +73,22 @@ public class EnemyList : MonoBehaviour
     /// </summary>
     public void GoEnemyMove()
     {
-        Debug.Log("GoEnemyMove　が反応している");
-        for (var i = 0; i < _enemys.Count; i++)
-        {
-            Debug.Log("生成されている敵に命令をしている");
-            EnemyMove _enemyMove = _enemys[i].GetComponent<EnemyMove>();
-            _enemyMove.MoveEnemy();
-        }
+        //Debug.Log("GoEnemyMove　が反応している");
+        //Debug.Log(_enemys.Count + "_enemys.Count");
+        //if(_enemys.Count == 1)
+        //{
+        //    EnemyMove _enemyMove = _enemys[0].GetComponent<EnemyMove>();
+        //    _enemyMove.MoveEnemy();
+        //}
+        //else
+        //{
+            for (var i = 0; i < _enemys.Count; i++)
+            {
+                //Debug.Log("生成されている敵に命令をしている");
+                EnemyMove _enemyMove = _enemys[i].GetComponent<EnemyMove>();
+                _enemyMove.MoveEnemy();
+            }
+        
     }
 
     /// <summary>
@@ -86,7 +97,7 @@ public class EnemyList : MonoBehaviour
     /// <param name="posx">プレイヤーのX座標</param>
     /// <param name="posz">プレイヤーのZ座標</param>
     /// <param name="pPower">プレイヤーの攻撃力</param>
-    public void CheckEnemy(int posx, int posz, int pPower)
+    public void CheckEnemy(int posx, int posz, float pPower)
     {
         Debug.Log("呼ばれている");
         for (var j = 0; j < _enemys.Count; j++)

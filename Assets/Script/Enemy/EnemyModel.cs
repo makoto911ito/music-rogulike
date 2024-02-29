@@ -6,17 +6,17 @@ using UniRx;
 public class EnemyModel
 {
     /// <summary>敵キャラクターのHPを管理する変数</summary>
-    ReactiveProperty<int> _enemyHpPropety;
-    int _maxHp = 0;
+    ReactiveProperty<float> _enemyHpPropety;
+    float _maxHp = 0;
 
-    public EnemyModel(int maxHp, System.Action<int> action, GameObject gameObject)
+    public EnemyModel(float maxHp, System.Action<float> action, GameObject gameObject)
     {
         _maxHp = maxHp;
-        _enemyHpPropety = new ReactiveProperty<int>(maxHp);
+        _enemyHpPropety = new ReactiveProperty<float>(maxHp);
         _enemyHpPropety.Subscribe(action).AddTo(gameObject);
     }
 
-    public void Damage(int damage)
+    public void Damage(float damage)
     {
         Debug.Log("計算している");
         _enemyHpPropety.Value -= damage;

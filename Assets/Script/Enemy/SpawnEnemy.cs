@@ -29,6 +29,7 @@ public class SpawnEnemy : MonoBehaviour
 
     /// <summary></summary>
     [SerializeField] EnemyList _enemyList = null;
+    [SerializeField] EnemyAttackObjController _enemyAttackObjController = null;
 
     [SerializeField]
 
@@ -59,7 +60,7 @@ public class SpawnEnemy : MonoBehaviour
                 }
                 else
                 {
-                    Debug.Log("敵キャラが生成された");
+                    //Debug.Log("敵キャラが生成された");
                     GameObject _enemy = Instantiate(_enemys[_randoEnemyNum], new Vector3(MapManager._areas[_randomNumX, _randomNumZ].transform.position.x, 1.5f, MapManager._areas[_randomNumX, _randomNumZ].transform.position.z), Quaternion.identity);
                     _enemyList.Enemy(_enemy);
 
@@ -148,14 +149,14 @@ public class SpawnEnemy : MonoBehaviour
                         }
                         else
                         {
-                            int spawnNum = Random.Range(3, 11);
+                            //int spawnNum = Random.Range(3, 11);
 
-                            for (int i = 0; i <= spawnNum; i++)
-                            {
-                                //Debug.Log("ボスキャラが生成された");
-                                GameObject _enemy = Instantiate(_bossEnemys[_randomNum], new Vector3(MapManager._areas[_randomBossPosNumX, _randomBossPosNumZ].transform.position.x, 1.5f, MapManager._areas[_randomBossPosNumX, _randomBossPosNumZ].transform.position.z), Quaternion.identity);
-                                _enemyList.Enemy(_enemy);
-                            }
+                            //for (int i = 0; i <= spawnNum; i++)
+                            //{
+                            //    //Debug.Log("ボスキャラが生成された");
+                            //    GameObject _enemy = Instantiate(_bossEnemys[_randomNum], new Vector3(MapManager._areas[_randomBossPosNumX, _randomBossPosNumZ].transform.position.x, 1.5f, MapManager._areas[_randomBossPosNumX, _randomBossPosNumZ].transform.position.z), Quaternion.identity);
+                            //    _enemyList.Enemy(_enemy);
+                            //}
                         }
 
                     }
@@ -165,6 +166,8 @@ public class SpawnEnemy : MonoBehaviour
                         //Debug.Log("ラスボスが現れた");
                         GameObject _enemy = Instantiate(_gameBossEnemys[num], new Vector3(MapManager._areas[_randomBossPosNumX, _randomBossPosNumZ].transform.position.x, 1.5f, MapManager._areas[_randomBossPosNumX, _randomBossPosNumZ].transform.position.z), Quaternion.identity);
                         _enemyList.Enemy(_enemy);
+                        var move = _enemy.GetComponent<EnemyMove>();
+                        move.GetAObjController(_enemyAttackObjController);
                         _isSpon = false;
                     }
 

@@ -28,11 +28,18 @@ public class SpawnPlayer : MonoBehaviour
     /// <summary>生成したプレイヤーを保持する変数</summary>
     GameObject _playercharacter;
 
+    [SerializeField]
+    GameObject _attackEffect;
+    [SerializeField]
+    GameObject _damageEffect;
+
     /// <summary>プレイヤーを生成する関数</summary>
     public void PlayerGenerate()
     {
         _playercharacter = Instantiate(_player, new Vector3(6, 6, 6), Quaternion.identity);
         _playercharacter.name = "Player";
+        var _playerMove = _playercharacter.GetComponent<PlayerMove>();
+        _playerMove.GetEffect(_attackEffect);
     }
 
 

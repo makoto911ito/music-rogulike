@@ -6,6 +6,7 @@ public enum EMove
 {
     A,
     B,
+    C,
 }
 
 abstract class MoveBase
@@ -34,6 +35,10 @@ public class EnemyMove : MonoBehaviour
 
     GameManager _gameManager;
 
+    [SerializeField] GameObject _attackObj;
+
+    EnemyAttackObjController _enemyAttackObjController;
+
     EnemyList _enemyList;
 
     bool _once = true;
@@ -53,6 +58,9 @@ public class EnemyMove : MonoBehaviour
                 case EMove.B:
                     _moveType = new EnemyMoveBaseB(this, _playerPresenter);
                     break;
+                case EMove.C:
+                    _moveType = new EnemyMoveBaseC(this, _playerPresenter,_enemyAttackObjController, _attackObj);
+                    break;
             }
             _eMove = value;
         }
@@ -60,8 +68,14 @@ public class EnemyMove : MonoBehaviour
     /// <summary>タイプによって動きを変えるそのタイプを管理する変数</summary>
     [SerializeField] EMove _eMove = EMove.A;
 
+    public void GetAObjController(EnemyAttackObjController enemyAttackObjController)
+    {
+        _enemyAttackObjController = enemyAttackObjController;
+    }
+
     private void Start()
     {
+
         var gm = GameObject.Find("GameManager");
         _gameManager = gm.GetComponent<GameManager>();
 
@@ -72,26 +86,32 @@ public class EnemyMove : MonoBehaviour
             Debug.Log("プレイヤーを取得できませんでした");
         }
 
+        if (_attackObj == null)
+        {
+            if (_eMove == EMove.C)
+            {
+                Debug.Log("飛び道具がセットされていません");
+            }
+        }
+
         _playerPresenter = gameObject.GetComponent<PlayerPresenter>();
 
         _enemyPresenter.GetLisut();
         _enemyPresenter.Init();
-
-
     }
 
     public void MoveEnemy()
     {
-        Debug.Log("動けの命令を受け取った");
+        //Debug.Log("動けの命令を受け取った");
         //敵を動かす
         _moveType.Move();
     }
 
-    public void Attack()
-    {
-        //攻撃をする
-        _playerPresenter.EnemyAttack(1);
-    }
+    //public void Attack()
+    //{
+    //    //攻撃をする
+    //    _playerPresenter.EnemyAttack(1);
+    //}
 
 
     public void DeleteEnemy()

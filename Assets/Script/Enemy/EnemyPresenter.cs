@@ -32,7 +32,7 @@ public class EnemyPresenter : MonoBehaviour
             x =>
             {
                 _enemyView.ChangeSliderValue(_enemyHp, x);
-                if(x == 0)
+                if(x <= 0)
                 {
                     _enemyList.EnemyDestroy(this.gameObject);
                 }
@@ -42,7 +42,7 @@ public class EnemyPresenter : MonoBehaviour
 
     }
 
-    public void Damage(int pPower)
+    public void Damage(float pPower)
     {
         if (_enemyModel == null)
         {

@@ -7,7 +7,7 @@ public class EnemyView : MonoBehaviour
 {
     [SerializeField] Slider _slider = null; 
 
-    public void ChangeSliderValue(int maxHp, int currentHp)
+    public void ChangeSliderValue(int maxHp, float currentHp)
     {
         _slider.maxValue = maxHp;
         _slider.value = currentHp;

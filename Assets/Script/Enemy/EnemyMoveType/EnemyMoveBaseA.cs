@@ -35,7 +35,7 @@ class EnemyMoveBaseA : MoveBase
         {
             _initPosX = _enemyMove._pointX;
             _enemyPosX = _enemyMove._pointX;
-            Debug.Log(_enemyPosX + "敵の位置X");
+            //Debug.Log(_enemyPosX + "敵の位置X");
             _once = false;
         }
         //Debug.Log(_enemyMove._pointX + "敵の位置X");
@@ -62,12 +62,12 @@ class EnemyMoveBaseA : MoveBase
             {
                 if (_change == true)
                 {
-                    Debug.Log(_count + "/" + _change + "折り返し");
+                    //Debug.Log(_count + "/" + _change + "折り返し");
                     _count--;
                 }
                 else
                 {
-                    Debug.Log(_count + "/" + _change + "折り返し");
+                    //Debug.Log(_count + "/" + _change + "折り返し");
                     _count++;
                 }
 
@@ -97,8 +97,8 @@ class EnemyMoveBaseA : MoveBase
                     areaController._onEnemy = false;
                     _enemyMove.transform.position = new Vector3(MapManager._areas[_initPosX, _enemyMove._pointZ].transform.position.x, _enemyMove.transform.position.y, _enemyMove.transform.position.z);
                     _enemyPosX = _initPosX;
-                    Debug.Log(_count + "方向");
-                    Debug.Log(_enemyPosX + "現在の位置");
+                    //Debug.Log(_count + "方向");
+                    //Debug.Log(_enemyPosX + "現在の位置");
                 }
 
             }
@@ -125,8 +125,8 @@ class EnemyMoveBaseA : MoveBase
                     areaController._onEnemy = false;
                     _enemyMove.transform.position = new Vector3(MapManager._areas[_enemyPosX + _count, _enemyMove._pointZ].transform.position.x, _enemyMove.transform.position.y, _enemyMove.transform.position.z);
                     _enemyPosX = _enemyPosX + _count;
-                    Debug.Log(_count + "方向");
-                    Debug.Log(_enemyPosX + "現在の位置");
+                    //Debug.Log(_count + "方向");
+                    //Debug.Log(_enemyPosX + "現在の位置");
                 }
             }
 
